@@ -1,0 +1,7 @@
+target/
+data/
+out/
+out-test/
+jacoco.exec
+.idea/
+*.iml

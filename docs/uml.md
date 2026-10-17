@@ -4,7 +4,7 @@
 
 ```mermaid
 classDiagram
-    class Main
+    class Client
     class AdmissionFacade {
         +admit(name, insuranceNumber, department, medicine) int
         +recoverUnfinished() int
@@ -18,10 +18,14 @@ classDiagram
         +reset() void
     }
     class RegistrationDesk
+    class AdmissionValidator
+    class InsuranceVerifier
     class BedAllocator
+    class EquipmentPolicy
     class EquipmentReserver
     class LabOrderSystem
     class PharmacyDispatcher
+    class StockChecker
     class AdmissionRepository
     class BedRepository
     class OrderRepository
@@ -29,8 +33,8 @@ classDiagram
     class Admission
     class BedAssignment
     class HospitalOrder
-    Main --> AdmissionFacade
-    Main --> AdminFacade
+    Client --> AdmissionFacade : admit
+    Client --> AdminFacade : administration
     AdminFacade --> AdmissionFacade : compensation
     AdminFacade --> AdmissionRepository
     AdminFacade --> BedRepository
@@ -43,16 +47,20 @@ classDiagram
     AdmissionFacade --> PharmacyDispatcher
     AdmissionFacade --> ChainRepository
     RegistrationDesk --> AdmissionRepository
+    RegistrationDesk --> AdmissionValidator
+    RegistrationDesk --> InsuranceVerifier
     BedAllocator --> BedRepository
+    BedAllocator --> EquipmentPolicy
     EquipmentReserver --> BedRepository
     LabOrderSystem --> OrderRepository
     PharmacyDispatcher --> OrderRepository
+    PharmacyDispatcher --> StockChecker
     AdmissionRepository --> Admission
     BedRepository --> BedAssignment
     OrderRepository --> HospitalOrder
 ```
 
-Подсистемы `registration`, `bed` и `orders` не зависят друг от друга. Их координация находится в `facade`.
+`Client` на схеме — `app.Main`. Подсистемы `registration`, `bed` и `orders` не зависят друг от друга. Их координация находится в `facade`.
 
 ## Состояния сущностей и цепочки
 

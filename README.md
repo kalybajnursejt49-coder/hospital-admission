@@ -24,19 +24,66 @@ JaCoCo проверяет минимум 80% строк основного ко�
 
 ## Принцип наименьшего знания (3.5)
 
-До исправления административный клиент проходил через фасад к внутреннему репозиторию:
+Без фасада клиенту пришлось бы знать классы всех трёх подсистем, порядок вызовов, состояния цепочки и обратные действия при сбое:
 
 ```java
-admissionFacade.getBedRepository().findAll();
+AdmissionRepository registrations = new AdmissionRepository(databaseFile);
+BedRepository beds = new BedRepository(databaseFile);
+OrderRepository orders = new OrderRepository(databaseFile);
+ChainRepository chains = new ChainRepository(databaseFile);
+RegistrationDesk desk = new RegistrationDesk(
+        new AdmissionValidator(), new InsuranceVerifier(), registrations);
+BedAllocator allocator = new BedAllocator(beds, new EquipmentPolicy());
+EquipmentReserver equipment = new EquipmentReserver(beds);
+LabOrderSystem lab = new LabOrderSystem(orders);
+PharmacyDispatcher pharmacy = new PharmacyDispatcher(orders, new StockChecker());
+
+int id;
+try (Connection connection = Sqlite.open(databaseFile)) {
+    connection.setAutoCommit(false);
+    try {
+        id = desk.register(connection, name, insuranceNumber).getId();
+        chains.savePendingB(connection, id);
+        connection.commit();
+    } catch (SQLException | RuntimeException e) {
+        connection.rollback();
+        throw e;
+    }
+} catch (SQLException e) {
+    throw Sqlite.failure(e);
+}
+
+try {
+    allocator.reserve(id, department);
+    equipment.reserve(id);
+    chains.setStatus(id, ChainStatus.PENDING_C);
+} catch (BedUnavailableException e) {
+    beds.release(id);
+    registrations.cancelAdmission(id);
+    chains.setStatus(id, ChainStatus.COMPENSATED);
+    throw e;
+}
+
+try {
+    lab.createAndSend(id);
+    pharmacy.dispatch(id, medicine);
+    chains.setStatus(id, ChainStatus.COMPLETED);
+} catch (PharmacyOutOfStockException e) {
+    orders.cancelByAdmissionId(id);
+    beds.release(id);
+    registrations.cancelAdmission(id);
+    chains.setStatus(id, ChainStatus.COMPENSATED);
+    throw e;
+}
 ```
 
-После исправления клиент вызывает один метод административного фасада:
+С фасадом клиент делает один вызов:
 
 ```java
-adminFacade.printTables();
+int id = admissionFacade.admit(name, insuranceNumber, department, medicine);
 ```
 
-`AdminFacade` получает путь к БД и сам создаёт нужные репозитории. `AdmissionFacade` не предоставляет геттеров репозиториев. Поэтому изменение внутреннего состава `AdmissionFacade` не требует менять меню и административные операции. Тесты читают БД напрямую через отдельные репозитории, так как проверяют сохранённое состояние, а не публичный интерфейс приложения.
+`AdmissionFacade` скрывает от `Main` зависимости между A, B и C и детали компенсации. `AdminFacade` отдельно получает путь к БД и сам создаёт репозитории для административных действий. `AdmissionFacade` не предоставляет геттеров репозиториев. Тесты читают БД напрямую через отдельные репозитории, так как проверяют сохранённое состояние, а не публичный интерфейс приложения.
 
 ## Facade vs Adapter (3.10)
 
@@ -44,4 +91,4 @@ adminFacade.printTables();
 
 ## UML
 
-Диаграммы классов, статусов и последовательности: [docs/uml.md](docs/uml.md).
+Файл-изображение диаграммы классов: [docs/class-diagram.svg](docs/class-diagram.svg). Исходная Mermaid-диаграмма, состояния и последовательность: [docs/uml.md](docs/uml.md).

@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 920" width="1600" height="920" role="img" aria-labelledby="title desc">
+<title id="title">Hospital Admission — UML class diagram</title>
+<desc id="desc">Client uses AdmissionFacade and AdminFacade. The facade coordinates registration, bed, and order subsystems. All fifteen subsystem classes are shown.</desc>
+<defs><marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#536477" stroke-width="1.7"/></marker></defs>
+<rect width="1600" height="920" fill="#f8fafc"/>
+<text x="800" y="40" text-anchor="middle" font-family="Arial,sans-serif" font-size="27" font-weight="700" fill="#17243a">Hospital Admission — диаграмма классов</text>
+<text x="800" y="68" text-anchor="middle" font-family="Arial,sans-serif" font-size="15" fill="#536477">Клиент работает с фасадами; подсистемы A, B и C не зависят друг от друга</text>
+<rect x="40" y="365" width="480" height="490" rx="18" fill="#edf6ff" stroke="#2563a6" stroke-width="2" stroke-dasharray="8 5"/>
+<text x="64" y="401" font-family="Arial,sans-serif" font-size="21" font-weight="700" fill="#2563a6">A · registration</text>
+<text x="64" y="424" font-family="Arial,sans-serif" font-size="14" fill="#536477">Регистрация пациента</text>
+<rect x="560" y="365" width="480" height="490" rx="18" fill="#ecfaf5" stroke="#12806f" stroke-width="2" stroke-dasharray="8 5"/>
+<text x="584" y="401" font-family="Arial,sans-serif" font-size="21" font-weight="700" fill="#12806f">B · bed</text>
+<text x="584" y="424" font-family="Arial,sans-serif" font-size="14" fill="#536477">Койка и оборудование</text>
+<rect x="1080" y="365" width="480" height="490" rx="18" fill="#f7f0ff" stroke="#7950aa" stroke-width="2" stroke-dasharray="8 5"/>
+<text x="1104" y="401" font-family="Arial,sans-serif" font-size="21" font-weight="700" fill="#7950aa">C · orders</text>
+<text x="1104" y="424" font-family="Arial,sans-serif" font-size="14" fill="#536477">Лаборатория и аптека</text>
+<path d="M800 127 L800 168" fill="none" stroke="#536477" stroke-width="2" marker-end="url(#arrow)"/>
+<path d="M800 244 L800 286 L280 286 L280 439" fill="none" stroke="#536477" stroke-width="2" marker-end="url(#arrow)"/>
+<path d="M800 244 L800 286 L690 286 L690 439" fill="none" stroke="#536477" stroke-width="2" marker-end="url(#arrow)"/>
+<path d="M800 244 L800 286 L910 286 L910 439" fill="none" stroke="#536477" stroke-width="2" marker-end="url(#arrow)"/>
+<path d="M800 244 L800 286 L1295 286 L1295 430 L1190 430 L1190 439" fill="none" stroke="#536477" stroke-width="2" marker-end="url(#arrow)"/>
+<path d="M800 244 L800 286 L1420 286 L1420 439" fill="none" stroke="#536477" stroke-width="2" marker-end="url(#arrow)"/>
+<path d="M700 205 L485 205" fill="none" stroke="#536477" stroke-width="2" marker-end="url(#arrow)"/>
+<path d="M900 107 L1175 107 L1175 168" fill="none" stroke="#536477" stroke-width="2" marker-end="url(#arrow)"/>
+<path d="M1175 244 L1175 344 L1260 344 L1260 365" fill="none" stroke="#536477" stroke-width="2" marker-end="url(#arrow)" stroke-dasharray="6 5"/>
+<path d="M280 501 L280 534 L170 534 L170 555" fill="none" stroke="#536477" stroke-width="2" marker-end="url(#arrow)"/>
+<path d="M280 501 L280 534 L390 534 L390 555" fill="none" stroke="#536477" stroke-width="2" marker-end="url(#arrow)"/>
+<path d="M280 501 L280 659" fill="none" stroke="#536477" stroke-width="2" marker-end="url(#arrow)"/>
+<path d="M280 721 L280 758" fill="none" stroke="#536477" stroke-width="2" marker-end="url(#arrow)"/>
+<path d="M690 501 L690 555" fill="none" stroke="#536477" stroke-width="2" marker-end="url(#arrow)"/>
+<path d="M910 501 L910 659" fill="none" stroke="#536477" stroke-width="2" marker-end="url(#arrow)"/>
+<path d="M690 617 L690 640 L910 640 L910 659" fill="none" stroke="#536477" stroke-width="2" marker-end="url(#arrow)"/>
+<path d="M910 721 L910 758" fill="none" stroke="#536477" stroke-width="2" marker-end="url(#arrow)"/>
+<path d="M1190 501 L1190 659" fill="none" stroke="#536477" stroke-width="2" marker-end="url(#arrow)"/>
+<path d="M1420 501 L1420 555" fill="none" stroke="#536477" stroke-width="2" marker-end="url(#arrow)"/>
+<path d="M1420 617 L1420 640 L1190 640 L1190 659" fill="none" stroke="#536477" stroke-width="2" marker-end="url(#arrow)"/>
+<path d="M1190 721 L1190 758" fill="none" stroke="#536477" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="700" y="80" width="200" height="47" rx="9" fill="#ffffff" stroke="#374151" stroke-width="2"/>
+<text x="800.0" y="106" text-anchor="middle" font-family="Arial,sans-serif" font-size="17" font-weight="700" fill="#17243a">Client</text>
+<text x="800.0" y="127" text-anchor="middle" font-family="Arial,sans-serif" font-size="12" fill="#536477">app.Main</text>
+<rect x="700" y="168" width="200" height="76" rx="9" fill="#e3eaf2" stroke="#374151" stroke-width="2"/>
+<text x="800.0" y="194" text-anchor="middle" font-family="Arial,sans-serif" font-size="17" font-weight="700" fill="#17243a">AdmissionFacade</text>
+<text x="800.0" y="215" text-anchor="middle" font-family="Arial,sans-serif" font-size="12" fill="#536477">admit · recover · compensate</text>
+<rect x="1060" y="168" width="230" height="76" rx="9" fill="#e3eaf2" stroke="#374151" stroke-width="2"/>
+<text x="1175.0" y="194" text-anchor="middle" font-family="Arial,sans-serif" font-size="17" font-weight="700" fill="#17243a">AdminFacade</text>
+<text x="1175.0" y="215" text-anchor="middle" font-family="Arial,sans-serif" font-size="12" fill="#536477">осмотр · настройки · сброс</text>
+<rect x="255" y="174" width="230" height="62" rx="9" fill="#ffffff" stroke="#374151" stroke-width="2"/>
+<text x="370.0" y="200" text-anchor="middle" font-family="Arial,sans-serif" font-size="17" font-weight="700" fill="#17243a">ChainRepository</text>
+<text x="370.0" y="221" text-anchor="middle" font-family="Arial,sans-serif" font-size="12" fill="#536477">admission_chain</text>
+<rect x="150" y="439" width="260" height="62" rx="9" fill="#ffffff" stroke="#2563a6" stroke-width="2"/>
+<text x="280.0" y="465" text-anchor="middle" font-family="Arial,sans-serif" font-size="17" font-weight="700" fill="#17243a">RegistrationDesk</text>
+<text x="280.0" y="486" text-anchor="middle" font-family="Arial,sans-serif" font-size="12" fill="#536477">validate · verify · register</text>
+<rect x="70" y="555" width="200" height="62" rx="9" fill="#ffffff" stroke="#2563a6" stroke-width="2"/>
+<text x="170.0" y="581" text-anchor="middle" font-family="Arial,sans-serif" font-size="17" font-weight="700" fill="#17243a">AdmissionValidator</text>
+<text x="170.0" y="602" text-anchor="middle" font-family="Arial,sans-serif" font-size="12" fill="#536477">проверка данных</text>
+<rect x="290" y="555" width="200" height="62" rx="9" fill="#ffffff" stroke="#2563a6" stroke-width="2"/>
+<text x="390.0" y="581" text-anchor="middle" font-family="Arial,sans-serif" font-size="17" font-weight="700" fill="#17243a">InsuranceVerifier</text>
+<text x="390.0" y="602" text-anchor="middle" font-family="Arial,sans-serif" font-size="12" fill="#536477">проверка страховки</text>
+<rect x="150" y="659" width="260" height="62" rx="9" fill="#ffffff" stroke="#2563a6" stroke-width="2"/>
+<text x="280.0" y="685" text-anchor="middle" font-family="Arial,sans-serif" font-size="17" font-weight="700" fill="#17243a">AdmissionRepository</text>
+<text x="280.0" y="706" text-anchor="middle" font-family="Arial,sans-serif" font-size="12" fill="#536477">SQLite · admissions</text>
+<rect x="150" y="758" width="260" height="62" rx="9" fill="#ffffff" stroke="#2563a6" stroke-width="2"/>
+<text x="280.0" y="784" text-anchor="middle" font-family="Arial,sans-serif" font-size="17" font-weight="700" fill="#17243a">Admission</text>
+<text x="280.0" y="805" text-anchor="middle" font-family="Arial,sans-serif" font-size="12" fill="#536477">NEW → REGISTERED → CANCELLED</text>
+<rect x="590" y="439" width="200" height="62" rx="9" fill="#ffffff" stroke="#12806f" stroke-width="2"/>
+<text x="690.0" y="465" text-anchor="middle" font-family="Arial,sans-serif" font-size="17" font-weight="700" fill="#17243a">BedAllocator</text>
+<text x="690.0" y="486" text-anchor="middle" font-family="Arial,sans-serif" font-size="12" fill="#536477">резерв койки</text>
+<rect x="810" y="439" width="200" height="62" rx="9" fill="#ffffff" stroke="#12806f" stroke-width="2"/>
+<text x="910.0" y="465" text-anchor="middle" font-family="Arial,sans-serif" font-size="17" font-weight="700" fill="#17243a">EquipmentReserver</text>
+<text x="910.0" y="486" text-anchor="middle" font-family="Arial,sans-serif" font-size="12" fill="#536477">резерв оборудования</text>
+<rect x="590" y="555" width="200" height="62" rx="9" fill="#ffffff" stroke="#12806f" stroke-width="2"/>
+<text x="690.0" y="581" text-anchor="middle" font-family="Arial,sans-serif" font-size="17" font-weight="700" fill="#17243a">EquipmentPolicy</text>
+<text x="690.0" y="602" text-anchor="middle" font-family="Arial,sans-serif" font-size="12" fill="#536477">выбор оборудования</text>
+<rect x="810" y="659" width="200" height="62" rx="9" fill="#ffffff" stroke="#12806f" stroke-width="2"/>
+<text x="910.0" y="685" text-anchor="middle" font-family="Arial,sans-serif" font-size="17" font-weight="700" fill="#17243a">BedRepository</text>
+<text x="910.0" y="706" text-anchor="middle" font-family="Arial,sans-serif" font-size="12" fill="#536477">SQLite · bed_assignments</text>
+<rect x="680" y="758" width="260" height="62" rx="9" fill="#ffffff" stroke="#12806f" stroke-width="2"/>
+<text x="810.0" y="784" text-anchor="middle" font-family="Arial,sans-serif" font-size="17" font-weight="700" fill="#17243a">BedAssignment</text>
+<text x="810.0" y="805" text-anchor="middle" font-family="Arial,sans-serif" font-size="12" fill="#536477">RESERVED → ASSIGNED → RELEASED</text>
+<rect x="1090" y="439" width="200" height="62" rx="9" fill="#ffffff" stroke="#7950aa" stroke-width="2"/>
+<text x="1190.0" y="465" text-anchor="middle" font-family="Arial,sans-serif" font-size="17" font-weight="700" fill="#17243a">LabOrderSystem</text>
+<text x="1190.0" y="486" text-anchor="middle" font-family="Arial,sans-serif" font-size="12" fill="#536477">лабораторный заказ</text>
+<rect x="1310" y="439" width="220" height="62" rx="9" fill="#ffffff" stroke="#7950aa" stroke-width="2"/>
+<text x="1420.0" y="465" text-anchor="middle" font-family="Arial,sans-serif" font-size="17" font-weight="700" fill="#17243a">PharmacyDispatcher</text>
+<text x="1420.0" y="486" text-anchor="middle" font-family="Arial,sans-serif" font-size="12" fill="#536477">аптечный заказ</text>
+<rect x="1310" y="555" width="220" height="62" rx="9" fill="#ffffff" stroke="#7950aa" stroke-width="2"/>
+<text x="1420.0" y="581" text-anchor="middle" font-family="Arial,sans-serif" font-size="17" font-weight="700" fill="#17243a">StockChecker</text>
+<text x="1420.0" y="602" text-anchor="middle" font-family="Arial,sans-serif" font-size="12" fill="#536477">проверка остатка</text>
+<rect x="1090" y="659" width="200" height="62" rx="9" fill="#ffffff" stroke="#7950aa" stroke-width="2"/>
+<text x="1190.0" y="685" text-anchor="middle" font-family="Arial,sans-serif" font-size="17" font-weight="700" fill="#17243a">OrderRepository</text>
+<text x="1190.0" y="706" text-anchor="middle" font-family="Arial,sans-serif" font-size="12" fill="#536477">SQLite · hospital_orders</text>
+<rect x="1090" y="758" width="230" height="62" rx="9" fill="#ffffff" stroke="#7950aa" stroke-width="2"/>
+<text x="1205.0" y="784" text-anchor="middle" font-family="Arial,sans-serif" font-size="17" font-weight="700" fill="#17243a">HospitalOrder</text>
+<text x="1205.0" y="805" text-anchor="middle" font-family="Arial,sans-serif" font-size="12" fill="#536477">CREATED → SENT → CANCELLED</text>
+<text x="800" y="895" text-anchor="middle" font-family="Arial,sans-serif" font-size="13" fill="#536477">Стрелка: использование или зависимость · Пунктир: административный доступ к данным</text>
+</svg>

@@ -52,10 +52,10 @@ public class RecoveryTest {
     }
 
     @Test
-    void failedChainInsertRollsBackRegistration() throws Exception {
+    void missingChainTableRollsBackRegistration() throws Exception {
         HospitalTestKit kit = new HospitalTestKit(folder);
         try (Connection connection = Sqlite.open(kit.file()); Statement statement = connection.createStatement()) {
-            statement.executeUpdate("CREATE TRIGGER reject_chain BEFORE INSERT ON admission_chain BEGIN SELECT RAISE(FAIL, 'chain unavailable'); END");
+            statement.executeUpdate("DROP TABLE admission_chain");
         }
         assertThrows(IllegalStateException.class, () -> kit.admissions().admit("Aibek", "INS-100", "GENERAL", "paracetamol"));
         assertTrue(kit.registrations().findAll().isEmpty());

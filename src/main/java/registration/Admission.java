@@ -18,9 +18,7 @@ public class Admission {
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
     public String getPatientName() { return patientName; }
-    public void setPatientName(String patientName) { this.patientName = patientName; }
     public String getInsuranceNumber() { return insuranceNumber; }
-    public void setInsuranceNumber(String insuranceNumber) { this.insuranceNumber = insuranceNumber; }
     public Status getStatus() { return status; }
     public void register() {
         if (status != Status.NEW) {

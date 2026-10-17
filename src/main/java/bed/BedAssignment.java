@@ -16,11 +16,8 @@ public class BedAssignment {
     }
 
     public int getAdmissionId() { return admissionId; }
-    public void setAdmissionId(int admissionId) { this.admissionId = admissionId; }
     public String getDepartment() { return department; }
-    public void setDepartment(String department) { this.department = department; }
     public String getEquipment() { return equipment; }
-    public void setEquipment(String equipment) { this.equipment = equipment; }
     public Status getStatus() { return status; }
     public void assign() {
         if (status != Status.RESERVED) {

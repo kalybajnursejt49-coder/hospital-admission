@@ -20,11 +20,8 @@ public class HospitalOrder {
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
     public int getAdmissionId() { return admissionId; }
-    public void setAdmissionId(int admissionId) { this.admissionId = admissionId; }
     public String getType() { return type; }
-    public void setType(String type) { this.type = type; }
     public String getMedicine() { return medicine; }
-    public void setMedicine(String medicine) { this.medicine = medicine; }
     public Status getStatus() { return status; }
     public void send() {
         if (status != Status.CREATED) {

@@ -173,7 +173,7 @@ public class OrderRepository {
         if (medicine == null || medicine.trim().isEmpty() || count < 0) {
             throw new IllegalArgumentException("Неверный препарат или остаток");
         }
-        try (Connection connection = Sqlite.open(file); PreparedStatement statement = connection.prepareStatement("INSERT INTO medicine_stock(medicine, available_count) VALUES (?, ?) ON CONFLICT(medicine) DO UPDATE SET available_count = excluded.available_count")) {
+        try (Connection connection = Sqlite.open(file); PreparedStatement statement = connection.prepareStatement("INSERT OR REPLACE INTO medicine_stock(medicine, available_count) VALUES (?, ?)")) {
             statement.setString(1, medicine.trim().toLowerCase());
             statement.setInt(2, count);
             statement.executeUpdate();

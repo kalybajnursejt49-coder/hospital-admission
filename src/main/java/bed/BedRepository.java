@@ -127,7 +127,7 @@ public class BedRepository {
         if (department == null || department.trim().isEmpty() || count < 0) {
             throw new IllegalArgumentException("Неверное отделение или число коек");
         }
-        try (Connection connection = Sqlite.open(file); PreparedStatement statement = connection.prepareStatement("INSERT INTO bed_capacity(department, free_count) VALUES (?, ?) ON CONFLICT(department) DO UPDATE SET free_count = excluded.free_count")) {
+        try (Connection connection = Sqlite.open(file); PreparedStatement statement = connection.prepareStatement("INSERT OR REPLACE INTO bed_capacity(department, free_count) VALUES (?, ?)")) {
             statement.setString(1, department.trim().toUpperCase());
             statement.setInt(2, count);
             statement.executeUpdate();

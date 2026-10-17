@@ -10,7 +10,5 @@ public class ChainRecord {
     }
 
     public int getAdmissionId() { return admissionId; }
-    public void setAdmissionId(int admissionId) { this.admissionId = admissionId; }
     public ChainStatus getStatus() { return status; }
-    public void setStatus(ChainStatus status) { this.status = status; }
 }

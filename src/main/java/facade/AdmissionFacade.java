@@ -4,6 +4,7 @@ import bed.BedAllocator;
 import bed.BedRepository;
 import bed.EquipmentPolicy;
 import bed.EquipmentReserver;
+import database.Sqlite;
 import exception.BedUnavailableException;
 import exception.InvalidPatientDataException;
 import exception.PharmacyOutOfStockException;
@@ -18,6 +19,8 @@ import registration.InsuranceVerifier;
 import registration.RegistrationDesk;
 
 import java.nio.file.Path;
+import java.sql.Connection;
+import java.sql.SQLException;
 
 public class AdmissionFacade {
     private final AdmissionRepository admissionRepository;
@@ -29,8 +32,10 @@ public class AdmissionFacade {
     private final EquipmentReserver equipmentReserver;
     private final LabOrderSystem labOrderSystem;
     private final PharmacyDispatcher pharmacyDispatcher;
+    private final Path databaseFile;
 
     public AdmissionFacade(Path databaseFile) {
+        this.databaseFile = databaseFile;
         admissionRepository = new AdmissionRepository(databaseFile);
         bedRepository = new BedRepository(databaseFile);
         orderRepository = new OrderRepository(databaseFile);
@@ -49,9 +54,21 @@ public class AdmissionFacade {
         if (medicine == null || medicine.trim().isEmpty()) {
             throw new InvalidPatientDataException("Препарат не указан");
         }
-        Admission admission = registrationDesk.register(name, insuranceNumber);
-        int id = admission.getId();
-        chainRepository.savePendingB(id);
+        int id;
+        try (Connection connection = Sqlite.open(databaseFile)) {
+            connection.setAutoCommit(false);
+            try {
+                Admission admission = registrationDesk.register(connection, name, insuranceNumber);
+                id = admission.getId();
+                chainRepository.savePendingB(connection, id);
+                connection.commit();
+            } catch (SQLException | RuntimeException e) {
+                connection.rollback();
+                throw e;
+            }
+        } catch (SQLException e) {
+            throw Sqlite.failure(e);
+        }
         try {
             bedAllocator.reserve(id, department);
             equipmentReserver.reserve(id);
@@ -94,9 +111,4 @@ public class AdmissionFacade {
         admissionRepository.cancelAdmission(admissionId);
         chainRepository.setStatus(admissionId, ChainStatus.COMPENSATED);
     }
-
-    public AdmissionRepository getAdmissionRepository() { return admissionRepository; }
-    public BedRepository getBedRepository() { return bedRepository; }
-    public OrderRepository getOrderRepository() { return orderRepository; }
-    public ChainRepository getChainRepository() { return chainRepository; }
 }

@@ -1,8 +1,5 @@
 package app;
 
-import exception.BedUnavailableException;
-import exception.InvalidPatientDataException;
-import exception.PharmacyOutOfStockException;
 import facade.AdminFacade;
 import facade.AdmissionFacade;
 
@@ -11,8 +8,9 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        AdmissionFacade admissions = new AdmissionFacade(Path.of("data", "hospital.db"));
-        AdminFacade admin = new AdminFacade(admissions);
+        Path databaseFile = Path.of("data", "hospital.db");
+        AdmissionFacade admissions = new AdmissionFacade(databaseFile);
+        AdminFacade admin = new AdminFacade(databaseFile, admissions);
         int recovered = admissions.recoverUnfinished();
         System.out.println("Восстановлено незавершённых цепочек: " + recovered);
         Scanner scanner = new Scanner(System.in);
@@ -68,7 +66,7 @@ public class Main {
                 } else {
                     System.out.println("Неизвестный пункт");
                 }
-            } catch (InvalidPatientDataException | BedUnavailableException | PharmacyOutOfStockException e) {
+            } catch (RuntimeException e) {
                 System.out.println("Ошибка: " + e.getMessage());
             }
         }

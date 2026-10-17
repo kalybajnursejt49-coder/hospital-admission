@@ -30,12 +30,12 @@ public class AdminFacadeTest {
         assertTrue(text.contains("COMPLETED"));
         assertTrue(text.contains("PHARMACY"));
         kit.admin().reset();
-        assertTrue(kit.admissions().getAdmissionRepository().findAll().isEmpty());
-        assertTrue(kit.admissions().getBedRepository().findAll().isEmpty());
-        assertTrue(kit.admissions().getOrderRepository().findAll().isEmpty());
-        assertTrue(kit.admissions().getChainRepository().findAll().isEmpty());
-        assertEquals(3, kit.admissions().getBedRepository().getFreeBeds("GENERAL"));
-        assertEquals(5, kit.admissions().getOrderRepository().getMedicineStock("paracetamol"));
+        assertTrue(kit.registrations().findAll().isEmpty());
+        assertTrue(kit.beds().findAll().isEmpty());
+        assertTrue(kit.orders().findAll().isEmpty());
+        assertTrue(kit.chains().findAll().isEmpty());
+        assertEquals(3, kit.beds().getFreeBeds("GENERAL"));
+        assertEquals(5, kit.orders().getMedicineStock("paracetamol"));
     }
 
     @Test

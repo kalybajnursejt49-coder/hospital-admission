@@ -23,18 +23,27 @@ public class AdmissionRepository {
     }
 
     public Admission saveAdmission(String name, String insuranceNumber) {
+        try (Connection connection = Sqlite.open(file)) {
+            return saveAdmission(connection, name, insuranceNumber);
+        } catch (SQLException e) {
+            throw Sqlite.failure(e);
+        }
+    }
+
+    public Admission saveAdmission(Connection connection, String name, String insuranceNumber) throws SQLException {
         String sql = "INSERT INTO admissions(patient_name, insurance_number, status) VALUES(?, ?, ?)";
-        try (Connection connection = Sqlite.open(file); PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        Admission admission = new Admission(0, name, insuranceNumber, Admission.Status.NEW);
+        admission.register();
+        try (PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             statement.setString(1, name);
             statement.setString(2, insuranceNumber);
-            statement.setString(3, Admission.Status.REGISTERED.name());
+            statement.setString(3, admission.getStatus().name());
             statement.executeUpdate();
             try (ResultSet keys = statement.getGeneratedKeys()) {
                 keys.next();
-                return new Admission(keys.getInt(1), name, insuranceNumber, Admission.Status.REGISTERED);
+                admission.setId(keys.getInt(1));
+                return admission;
             }
-        } catch (SQLException e) {
-            throw Sqlite.failure(e);
         }
     }
 
@@ -65,9 +74,17 @@ public class AdmissionRepository {
     }
 
     public void cancelAdmission(int id) {
-        try (Connection connection = Sqlite.open(file); PreparedStatement statement = connection.prepareStatement("UPDATE admissions SET status = 'CANCELLED' WHERE id = ? AND status = 'REGISTERED'")) {
-            statement.setInt(1, id);
-            statement.executeUpdate();
+        try (Connection connection = Sqlite.open(file)) {
+            Admission admission = findById(id);
+            if (admission == null || admission.getStatus() == Admission.Status.CANCELLED) {
+                return;
+            }
+            admission.cancel();
+            try (PreparedStatement statement = connection.prepareStatement("UPDATE admissions SET status = ? WHERE id = ? AND status = 'REGISTERED'")) {
+                statement.setString(1, admission.getStatus().name());
+                statement.setInt(2, id);
+                statement.executeUpdate();
+            }
         } catch (SQLException e) {
             throw Sqlite.failure(e);
         }

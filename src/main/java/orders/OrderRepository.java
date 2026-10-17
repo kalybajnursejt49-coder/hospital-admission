@@ -42,9 +42,23 @@ public class OrderRepository {
     }
 
     public void markSent(int id) {
-        try (Connection connection = Sqlite.open(file); PreparedStatement statement = connection.prepareStatement("UPDATE hospital_orders SET status = 'SENT' WHERE id = ? AND status = 'CREATED'")) {
-            statement.setInt(1, id);
-            statement.executeUpdate();
+        try (Connection connection = Sqlite.open(file)) {
+            HospitalOrder order;
+            try (PreparedStatement find = connection.prepareStatement("SELECT * FROM hospital_orders WHERE id = ?")) {
+                find.setInt(1, id);
+                try (ResultSet rows = find.executeQuery()) {
+                    if (!rows.next()) {
+                        throw new IllegalArgumentException("Заказ не найден: " + id);
+                    }
+                    order = read(rows);
+                }
+            }
+            order.send();
+            try (PreparedStatement update = connection.prepareStatement("UPDATE hospital_orders SET status = ? WHERE id = ? AND status = 'CREATED'")) {
+                update.setString(1, order.getStatus().name());
+                update.setInt(2, id);
+                update.executeUpdate();
+            }
         } catch (SQLException e) {
             throw Sqlite.failure(e);
         }
@@ -62,9 +76,12 @@ public class OrderRepository {
                 }
             }
             int id;
-            try (PreparedStatement insert = connection.prepareStatement("INSERT INTO hospital_orders(admission_id, order_type, medicine, status) VALUES (?, 'PHARMACY', ?, 'SENT')", Statement.RETURN_GENERATED_KEYS)) {
+            HospitalOrder order = new HospitalOrder(0, admissionId, "PHARMACY", name, HospitalOrder.Status.CREATED);
+            order.send();
+            try (PreparedStatement insert = connection.prepareStatement("INSERT INTO hospital_orders(admission_id, order_type, medicine, status) VALUES (?, 'PHARMACY', ?, ?)", Statement.RETURN_GENERATED_KEYS)) {
                 insert.setInt(1, admissionId);
                 insert.setString(2, name);
+                insert.setString(3, order.getStatus().name());
                 insert.executeUpdate();
                 try (ResultSet keys = insert.getGeneratedKeys()) {
                     keys.next();
@@ -72,7 +89,8 @@ public class OrderRepository {
                 }
             }
             connection.commit();
-            return new HospitalOrder(id, admissionId, "PHARMACY", name, HospitalOrder.Status.SENT);
+            order.setId(id);
+            return order;
         } catch (SQLException e) {
             throw Sqlite.failure(e);
         }
@@ -81,20 +99,28 @@ public class OrderRepository {
     public void cancelByAdmissionId(int admissionId) {
         try (Connection connection = Sqlite.open(file)) {
             connection.setAutoCommit(false);
-            try (PreparedStatement find = connection.prepareStatement("SELECT medicine FROM hospital_orders WHERE admission_id = ? AND order_type = 'PHARMACY' AND status = 'SENT'")) {
+            ArrayList<HospitalOrder> orders = new ArrayList<>();
+            try (PreparedStatement find = connection.prepareStatement("SELECT * FROM hospital_orders WHERE admission_id = ? AND status <> 'CANCELLED'")) {
                 find.setInt(1, admissionId);
                 try (ResultSet rows = find.executeQuery()) {
                     while (rows.next()) {
-                        try (PreparedStatement restore = connection.prepareStatement("UPDATE medicine_stock SET available_count = available_count + 1 WHERE medicine = ?")) {
-                            restore.setString(1, rows.getString(1));
-                            restore.executeUpdate();
-                        }
+                        orders.add(read(rows));
                     }
                 }
             }
-            try (PreparedStatement update = connection.prepareStatement("UPDATE hospital_orders SET status = 'CANCELLED' WHERE admission_id = ? AND status <> 'CANCELLED'")) {
-                update.setInt(1, admissionId);
-                update.executeUpdate();
+            for (HospitalOrder order : orders) {
+                if (order.getType().equals("PHARMACY") && order.getStatus() == HospitalOrder.Status.SENT) {
+                    try (PreparedStatement restore = connection.prepareStatement("UPDATE medicine_stock SET available_count = available_count + 1 WHERE medicine = ?")) {
+                        restore.setString(1, order.getMedicine());
+                        restore.executeUpdate();
+                    }
+                }
+                order.cancel();
+                try (PreparedStatement update = connection.prepareStatement("UPDATE hospital_orders SET status = ? WHERE id = ?")) {
+                    update.setString(1, order.getStatus().name());
+                    update.setInt(2, order.getId());
+                    update.executeUpdate();
+                }
             }
             connection.commit();
         } catch (SQLException e) {

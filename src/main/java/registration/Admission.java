@@ -22,5 +22,17 @@ public class Admission {
     public String getInsuranceNumber() { return insuranceNumber; }
     public void setInsuranceNumber(String insuranceNumber) { this.insuranceNumber = insuranceNumber; }
     public Status getStatus() { return status; }
-    public void setStatus(Status status) { this.status = status; }
+    public void register() {
+        if (status != Status.NEW) {
+            throw new IllegalStateException("Регистрация возможна только из NEW");
+        }
+        status = Status.REGISTERED;
+    }
+
+    public void cancel() {
+        if (status != Status.REGISTERED) {
+            throw new IllegalStateException("Отмена возможна только из REGISTERED");
+        }
+        status = Status.CANCELLED;
+    }
 }

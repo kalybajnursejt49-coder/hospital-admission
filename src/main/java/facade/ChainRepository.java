@@ -23,11 +23,17 @@ public class ChainRepository {
     }
 
     public void savePendingB(int admissionId) {
-        try (Connection connection = Sqlite.open(file); PreparedStatement statement = connection.prepareStatement("INSERT INTO admission_chain VALUES (?, 'PENDING_B')")) {
-            statement.setInt(1, admissionId);
-            statement.executeUpdate();
+        try (Connection connection = Sqlite.open(file)) {
+            savePendingB(connection, admissionId);
         } catch (SQLException e) {
             throw Sqlite.failure(e);
+        }
+    }
+
+    public void savePendingB(Connection connection, int admissionId) throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement("INSERT INTO admission_chain VALUES (?, 'PENDING_B')")) {
+            statement.setInt(1, admissionId);
+            statement.executeUpdate();
         }
     }
 

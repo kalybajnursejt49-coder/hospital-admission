@@ -22,5 +22,17 @@ public class BedAssignment {
     public String getEquipment() { return equipment; }
     public void setEquipment(String equipment) { this.equipment = equipment; }
     public Status getStatus() { return status; }
-    public void setStatus(Status status) { this.status = status; }
+    public void assign() {
+        if (status != Status.RESERVED) {
+            throw new IllegalStateException("Назначение возможно только из RESERVED");
+        }
+        status = Status.ASSIGNED;
+    }
+
+    public void release() {
+        if (status == Status.RELEASED) {
+            throw new IllegalStateException("Койка уже освобождена");
+        }
+        status = Status.RELEASED;
+    }
 }

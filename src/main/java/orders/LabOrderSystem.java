@@ -10,7 +10,7 @@ public class LabOrderSystem {
     public HospitalOrder createAndSend(int admissionId) {
         HospitalOrder order = repository.saveOrder(admissionId, "LAB", "");
         repository.markSent(order.getId());
-        order.setStatus(HospitalOrder.Status.SENT);
+        order.send();
         return order;
     }
 }

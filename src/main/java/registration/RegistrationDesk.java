@@ -1,5 +1,8 @@
 package registration;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+
 public class RegistrationDesk {
     private final AdmissionValidator validator;
     private final InsuranceVerifier insuranceVerifier;
@@ -15,5 +18,11 @@ public class RegistrationDesk {
         validator.validate(name, insuranceNumber);
         insuranceVerifier.verify(insuranceNumber);
         return repository.saveAdmission(name.trim(), insuranceNumber.trim());
+    }
+
+    public Admission register(Connection connection, String name, String insuranceNumber) throws SQLException {
+        validator.validate(name, insuranceNumber);
+        insuranceVerifier.verify(insuranceNumber);
+        return repository.saveAdmission(connection, name.trim(), insuranceNumber.trim());
     }
 }

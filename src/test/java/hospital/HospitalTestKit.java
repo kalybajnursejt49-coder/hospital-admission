@@ -3,6 +3,10 @@ package hospital;
 import facade.AdminFacade;
 import facade.AdmissionFacade;
 import facade.ChainStatus;
+import facade.ChainRepository;
+import bed.BedRepository;
+import orders.OrderRepository;
+import registration.AdmissionRepository;
 
 import java.nio.file.Path;
 
@@ -34,15 +38,19 @@ public class HospitalTestKit {
     }
 
     public void assertChainStatus(int id, String status) {
-        assertEquals(ChainStatus.valueOf(status), admissions.getChainRepository().getStatus(id));
+        assertEquals(ChainStatus.valueOf(status), chains().getStatus(id));
     }
 
     public void restart() {
         admissions = new AdmissionFacade(file);
-        admin = new AdminFacade(admissions);
+        admin = new AdminFacade(file, admissions);
     }
 
     public AdmissionFacade admissions() { return admissions; }
     public AdminFacade admin() { return admin; }
     public Path file() { return file; }
+    public AdmissionRepository registrations() { return new AdmissionRepository(file); }
+    public BedRepository beds() { return new BedRepository(file); }
+    public OrderRepository orders() { return new OrderRepository(file); }
+    public ChainRepository chains() { return new ChainRepository(file); }
 }

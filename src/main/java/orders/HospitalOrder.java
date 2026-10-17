@@ -26,5 +26,17 @@ public class HospitalOrder {
     public String getMedicine() { return medicine; }
     public void setMedicine(String medicine) { this.medicine = medicine; }
     public Status getStatus() { return status; }
-    public void setStatus(Status status) { this.status = status; }
+    public void send() {
+        if (status != Status.CREATED) {
+            throw new IllegalStateException("Отправка возможна только из CREATED");
+        }
+        status = Status.SENT;
+    }
+
+    public void cancel() {
+        if (status == Status.CANCELLED) {
+            throw new IllegalStateException("Заказ уже отменён");
+        }
+        status = Status.CANCELLED;
+    }
 }

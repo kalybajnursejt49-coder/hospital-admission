@@ -24,12 +24,12 @@ public class AdmissionFacadeTest {
         HospitalTestKit kit = new HospitalTestKit(folder);
         int id = kit.admissions().admit("Aibek", "INS-100", "GENERAL", "paracetamol");
         kit.assertChainStatus(id, "COMPLETED");
-        assertEquals(Admission.Status.REGISTERED, kit.admissions().getAdmissionRepository().findById(id).getStatus());
-        assertEquals(BedAssignment.Status.ASSIGNED, kit.admissions().getBedRepository().findByAdmissionId(id).getStatus());
-        assertEquals(2, kit.admissions().getOrderRepository().findByAdmissionId(id).size());
-        assertEquals(HospitalOrder.Status.SENT, kit.admissions().getOrderRepository().findByAdmissionId(id).get(0).getStatus());
-        assertEquals(2, kit.admissions().getBedRepository().getFreeBeds("GENERAL"));
-        assertEquals(4, kit.admissions().getOrderRepository().getMedicineStock("paracetamol"));
+        assertEquals(Admission.Status.REGISTERED, kit.registrations().findById(id).getStatus());
+        assertEquals(BedAssignment.Status.ASSIGNED, kit.beds().findByAdmissionId(id).getStatus());
+        assertEquals(2, kit.orders().findByAdmissionId(id).size());
+        assertEquals(HospitalOrder.Status.SENT, kit.orders().findByAdmissionId(id).get(0).getStatus());
+        assertEquals(2, kit.beds().getFreeBeds("GENERAL"));
+        assertEquals(4, kit.orders().getMedicineStock("paracetamol"));
     }
 
     @Test
@@ -37,9 +37,9 @@ public class AdmissionFacadeTest {
         HospitalTestKit kit = new HospitalTestKit(folder).withNoFreeBeds();
         assertThrows(BedUnavailableException.class, () -> kit.admissions().admit("Aibek", "INS-100", "GENERAL", "paracetamol"));
         kit.assertChainStatus(1, "COMPENSATED");
-        assertEquals(Admission.Status.CANCELLED, kit.admissions().getAdmissionRepository().findById(1).getStatus());
-        assertEquals(null, kit.admissions().getBedRepository().findByAdmissionId(1));
-        assertTrue(kit.admissions().getOrderRepository().findByAdmissionId(1).isEmpty());
+        assertEquals(Admission.Status.CANCELLED, kit.registrations().findById(1).getStatus());
+        assertEquals(null, kit.beds().findByAdmissionId(1));
+        assertTrue(kit.orders().findByAdmissionId(1).isEmpty());
     }
 
     @Test
@@ -47,10 +47,10 @@ public class AdmissionFacadeTest {
         HospitalTestKit kit = new HospitalTestKit(folder).withNoMedicine();
         assertThrows(PharmacyOutOfStockException.class, () -> kit.admissions().admit("Aibek", "INS-100", "GENERAL", "paracetamol"));
         kit.assertChainStatus(1, "COMPENSATED");
-        assertEquals(Admission.Status.CANCELLED, kit.admissions().getAdmissionRepository().findById(1).getStatus());
-        assertEquals(BedAssignment.Status.RELEASED, kit.admissions().getBedRepository().findByAdmissionId(1).getStatus());
-        assertEquals(3, kit.admissions().getBedRepository().getFreeBeds("GENERAL"));
-        assertEquals(HospitalOrder.Status.CANCELLED, kit.admissions().getOrderRepository().findByAdmissionId(1).get(0).getStatus());
+        assertEquals(Admission.Status.CANCELLED, kit.registrations().findById(1).getStatus());
+        assertEquals(BedAssignment.Status.RELEASED, kit.beds().findByAdmissionId(1).getStatus());
+        assertEquals(3, kit.beds().getFreeBeds("GENERAL"));
+        assertEquals(HospitalOrder.Status.CANCELLED, kit.orders().findByAdmissionId(1).get(0).getStatus());
     }
 
     @Test
@@ -61,8 +61,8 @@ public class AdmissionFacadeTest {
         assertThrows(InsuranceRejectedException.class, () -> kit.admissions().admit("Aibek", "BAD", "GENERAL", "paracetamol"));
         assertThrows(InvalidPatientDataException.class, () -> kit.admissions().admit("Aibek", "INS-100", "", "paracetamol"));
         assertThrows(InvalidPatientDataException.class, () -> kit.admissions().admit("Aibek", "INS-100", "GENERAL", ""));
-        assertTrue(kit.admissions().getAdmissionRepository().findAll().isEmpty());
-        assertTrue(kit.admissions().getChainRepository().findAll().isEmpty());
+        assertTrue(kit.registrations().findAll().isEmpty());
+        assertTrue(kit.chains().findAll().isEmpty());
     }
 
     @Test
@@ -72,9 +72,9 @@ public class AdmissionFacadeTest {
         kit.admin().compensate(id);
         kit.admin().compensate(id);
         kit.assertChainStatus(id, "COMPENSATED");
-        assertEquals(1, kit.admissions().getBedRepository().getFreeBeds("ICU"));
-        assertEquals(5, kit.admissions().getOrderRepository().getMedicineStock("paracetamol"));
-        assertEquals(2, kit.admissions().getOrderRepository().findByAdmissionId(id).size());
-        assertEquals(HospitalOrder.Status.CANCELLED, kit.admissions().getOrderRepository().findByAdmissionId(id).get(1).getStatus());
+        assertEquals(1, kit.beds().getFreeBeds("ICU"));
+        assertEquals(5, kit.orders().getMedicineStock("paracetamol"));
+        assertEquals(2, kit.orders().findByAdmissionId(id).size());
+        assertEquals(HospitalOrder.Status.CANCELLED, kit.orders().findByAdmissionId(id).get(1).getStatus());
     }
 }

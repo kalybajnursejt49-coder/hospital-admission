@@ -59,6 +59,7 @@ public class BedRepository {
                 connection.rollback();
                 throw new IllegalStateException("Койка не зарезервирована");
             }
+            assignment.assign();
             try (PreparedStatement update = connection.prepareStatement("UPDATE equipment_stock SET free_count = free_count - 1 WHERE equipment = ? AND free_count > 0")) {
                 update.setString(1, assignment.getEquipment());
                 if (update.executeUpdate() == 0) {
@@ -66,8 +67,9 @@ public class BedRepository {
                     throw new BedUnavailableException("Нет оборудования " + assignment.getEquipment());
                 }
             }
-            try (PreparedStatement update = connection.prepareStatement("UPDATE bed_assignments SET status = 'ASSIGNED' WHERE admission_id = ?")) {
-                update.setInt(1, admissionId);
+            try (PreparedStatement update = connection.prepareStatement("UPDATE bed_assignments SET status = ? WHERE admission_id = ?")) {
+                update.setString(1, assignment.getStatus().name());
+                update.setInt(2, admissionId);
                 update.executeUpdate();
             }
             connection.commit();
@@ -84,12 +86,15 @@ public class BedRepository {
                 connection.rollback();
                 return;
             }
+            boolean assigned = assignment.getStatus() == BedAssignment.Status.ASSIGNED;
+            assignment.release();
             changeCount(connection, "bed_capacity", "department", assignment.getDepartment(), 1);
-            if (assignment.getStatus() == BedAssignment.Status.ASSIGNED) {
+            if (assigned) {
                 changeCount(connection, "equipment_stock", "equipment", assignment.getEquipment(), 1);
             }
-            try (PreparedStatement update = connection.prepareStatement("UPDATE bed_assignments SET status = 'RELEASED' WHERE admission_id = ?")) {
-                update.setInt(1, admissionId);
+            try (PreparedStatement update = connection.prepareStatement("UPDATE bed_assignments SET status = ? WHERE admission_id = ?")) {
+                update.setString(1, assignment.getStatus().name());
+                update.setInt(2, admissionId);
                 update.executeUpdate();
             }
             connection.commit();
